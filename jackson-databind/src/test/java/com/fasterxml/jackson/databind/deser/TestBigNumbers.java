@@ -47,7 +47,7 @@ public class TestBigNumbers extends BaseMapTest
     /**********************************************************
      */
 
-    private final ObjectMapper MAPPER = newJsonMapper();
+    private ObjectMapper MAPPER = newJsonMapperWithUnlimitedNumberSizeSupport();
 
     private ObjectMapper newJsonMapperWithUnlimitedNumberSizeSupport() {
         JsonFactory jsonFactory = JsonFactory.builder()
@@ -59,8 +59,8 @@ public class TestBigNumbers extends BaseMapTest
     public void testDouble() throws Exception
     {
         try {
-            MAPPER.readValue(generateJson("d"), DoubleWrapper.class);
-            fail("expected StreamReadException");
+             MAPPER.readValue(generateJson("d"), DoubleWrapper.class);
+             fail("expected StreamReadException");
         } catch (StreamReadException e) {
             verifyException(e, "Invalid numeric value ", "exceeds the maximum length");
         }
