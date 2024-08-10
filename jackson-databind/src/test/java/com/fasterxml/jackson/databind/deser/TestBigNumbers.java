@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.StreamReadConstraints;
-import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 
 import com.fasterxml.jackson.databind.BaseMapTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +47,7 @@ public class TestBigNumbers extends BaseMapTest
     /**********************************************************
      */
 
-    private ObjectMapper MAPPER = newJsonMapperWithUnlimitedNumberSizeSupport();
+    private final ObjectMapper MAPPER = newJsonMapper();
 
     private ObjectMapper newJsonMapperWithUnlimitedNumberSizeSupport() {
         JsonFactory jsonFactory = JsonFactory.builder()
@@ -59,9 +59,9 @@ public class TestBigNumbers extends BaseMapTest
     public void testDouble() throws Exception
     {
         try {
-             MAPPER.readValue(generateJson("d"), DoubleWrapper.class);
-             fail("expected StreamReadException");
-        } catch (StreamReadException e) {
+            MAPPER.readValue(generateJson("d"), DoubleWrapper.class);
+            fail("expected StreamReadException");
+        } catch (StreamConstraintsException e) {
             verifyException(e, "Invalid numeric value ", "exceeds the maximum length");
         }
     }
@@ -78,7 +78,7 @@ public class TestBigNumbers extends BaseMapTest
         try {
             MAPPER.readValue(generateJson("number"), BigDecimalWrapper.class);
             fail("expected StreamReadException");
-        } catch (StreamReadException e) {
+        } catch (StreamConstraintsException e) {
             verifyException(e, "Invalid numeric value ", "exceeds the maximum length");
         }
     }
@@ -96,7 +96,7 @@ public class TestBigNumbers extends BaseMapTest
         try {
             MAPPER.readValue(generateJson("number"), BigIntegerWrapper.class);
             fail("expected StreamReadException");
-        } catch (StreamReadException e) {
+        } catch (StreamConstraintsException e) {
             verifyException(e, "Invalid numeric value ", "exceeds the maximum length");
         }
     }
