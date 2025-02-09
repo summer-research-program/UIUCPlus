@@ -22,6 +22,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import com.fasterxml.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as
@@ -650,7 +651,11 @@ public class FromXmlParser
                     }
                 }
                 // finally, need BigInteger
-                streamReadConstraints().validateIntegerLength(text.length());
+                try{
+                	streamReadConstraints().validateIntegerLength(text.length());
+                }catch(StreamConstraintsException ex){
+                	System.out.println(ex);
+                }
                 _numberBigInt = NumberInput.parseBigInteger(
                         text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
                 _numTypesValid = NR_BIGINT;

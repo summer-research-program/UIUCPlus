@@ -1,6 +1,9 @@
 package com.fasterxml.jackson.databind.deser.dos;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.StreamReadConstraints;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 // [databind#3397], wrt JsonNode
 public class DeepJsonNodeDeser3397Test extends BaseMapTest
@@ -12,7 +15,16 @@ public class DeepJsonNodeDeser3397Test extends BaseMapTest
 //    private final static int TOO_DEEP_NESTING = 1_000_000;
     private final static int TOO_DEEP_NESTING = 100_00;
 
-    private final ObjectMapper MAPPER = newJsonMapper();
+    private final ObjectMapper MAPPER;
+
+    public DeepJsonNodeDeser3397Test() {
+        JsonFactory jsonFactory = JsonFactory.builder()
+            .streamReadConstraints(StreamReadConstraints.builder()
+                .maxNestingDepth(200_000)  // Increase the depth as needed
+                .build())
+            .build();
+        MAPPER = JsonMapper.builder(jsonFactory).build();
+    }
 
     public void testTreeWithArray() throws Exception
     {

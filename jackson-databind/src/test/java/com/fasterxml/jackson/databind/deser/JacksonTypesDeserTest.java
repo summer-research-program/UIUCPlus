@@ -7,6 +7,9 @@ import com.fasterxml.jackson.core.io.ContentReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.StreamReadConstraints;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 /**
  * Unit tests for those Jackson types we want to ensure can be deserialized.
@@ -14,7 +17,16 @@ import com.fasterxml.jackson.databind.util.TokenBuffer;
 public class JacksonTypesDeserTest
     extends com.fasterxml.jackson.databind.BaseMapTest
 {
-    private final ObjectMapper MAPPER = sharedMapper();
+    private final ObjectMapper MAPPER;
+
+    public JacksonTypesDeserTest() {
+        JsonFactory factory = JsonFactory.builder()
+                .streamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(200_000).build())
+                .build();
+        MAPPER = JsonMapper.builder(factory).build();
+    }
+    
+    
 
     public void testJsonLocation() throws Exception
     {
